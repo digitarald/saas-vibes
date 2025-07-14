@@ -1,0 +1,356 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "🚀 Dev Server (Turbopack)",
+			"type": "shell",
+			"command": "pnpm",
+			"args": ["run", "dev"],
+			"group": "build",
+			"isBackground": true,
+			"problemMatcher": {
+				"owner": "typescript",
+				"source": "ts",
+				"fileLocation": ["relative", "${workspaceFolder}"],
+				"pattern": {
+					"regexp": "^([^\\s].*)\\((\\d+|\\d+,\\d+|\\d+,\\d+,\\d+,\\d+)\\):\\s+(error|warning|info)\\s+(TS\\d+)\\s*:\\s*(.*)$",
+					"file": 1,
+					"location": 2,
+					"severity": 3,
+					"code": 4,
+					"message": 5
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": ".*Local:.*",
+					"endsPattern": ".*Ready in.*"
+				}
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "dedicated",
+				"showReuseMessage": true,
+				"clear": false,
+				"group": "dev"
+			},
+			"runOptions": {
+				"runOn": "folderOpen"
+			}
+		},
+		{
+			"label": "🔍 Type Check",
+			"type": "shell",
+			"command": "pnpm",
+			"args": ["run", "type-check"],
+			"group": "test",
+			"problemMatcher": ["$tsc"],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "✨ Lint",
+			"type": "shell",
+			"command": "pnpm",
+			"args": ["run", "lint"],
+			"group": "test",
+			"problemMatcher": ["$eslint-stylish"],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "🔧 Lint & Fix",
+			"type": "shell",
+			"command": "pnpm",
+			"args": ["run", "lint", "--", "--fix"],
+			"group": "test",
+			"problemMatcher": ["$eslint-stylish"],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "🏗️ Build Production",
+			"type": "shell",
+			"command": "pnpm",
+			"args": ["run", "build"],
+			"group": "build",
+			"problemMatcher": ["$tsc", "$eslint-stylish"],
+			"dependsOn": ["🔍 Type Check", "✨ Lint"],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "🗄️ Database: Start Services",
+			"type": "shell",
+			"command": "pnpm",
+			"args": ["run", "docker:up"],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "🔄 Database: Generate Client",
+			"type": "shell",
+			"command": "pnpm",
+			"args": ["run", "db:generate"],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "🔄 Database: Migrate",
+			"type": "shell",
+			"command": "pnpm",
+			"args": ["run", "db:migrate"],
+			"group": "build",
+			"dependsOn": "🗄️ Database: Start Services",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "🌱 Database: Seed",
+			"type": "shell",
+			"command": "pnpm",
+			"args": ["run", "db:seed"],
+			"group": "build",
+			"dependsOn": ["🔄 Database: Migrate"],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "🎛️ Database: Studio",
+			"type": "shell",
+			"command": "pnpm",
+			"args": ["run", "db:studio"],
+			"group": "build",
+			"isBackground": true,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "dedicated",
+				"showReuseMessage": true,
+				"clear": false,
+				"group": "db"
+			}
+		},
+		{
+			"label": "🚀 Full Stack Setup",
+			"dependsOn": [
+				"🔄 Database: Generate Client",
+				"🌱 Database: Seed",
+				"🚀 Dev Server (Turbopack)"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true,
+				"group": "fullstack"
+			}
+		},
+		{
+			"label": "🧹 Clean & Restart",
+			"type": "shell",
+			"command": "pnpm",
+			"args": ["run", "docker:down"],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "🧪 Run Tests",
+			"type": "shell",
+			"command": "pnpm",
+			"args": ["test"],
+			"group": "test",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "🧪 Run Tests (Watch)",
+			"type": "shell",
+			"command": "pnpm",
+			"args": ["test", "--watch"],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"isBackground": true,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "dedicated",
+				"showReuseMessage": true,
+				"clear": false,
+				"group": "test"
+			}
+		},
+		{
+			"label": "🧪 Test Coverage",
+			"type": "shell",
+			"command": "pnpm",
+			"args": ["test:coverage"],
+			"group": "test",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "🧪 Test UI",
+			"type": "shell",
+			"command": "pnpm",
+			"args": ["test:ui"],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"isBackground": true,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "dedicated",
+				"showReuseMessage": true,
+				"clear": false,
+				"group": "test"
+			}
+		},
+		{
+			"label": "🎭 E2E Tests",
+			"type": "shell",
+			"command": "pnpm",
+			"args": ["test:e2e"],
+			"group": "test",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true
+			}
+		},
+		{
+			"label": "🎭 E2E Tests (UI)",
+			"type": "shell",
+			"command": "pnpm",
+			"args": ["test:e2e:ui"],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"isBackground": true,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "dedicated",
+				"showReuseMessage": true,
+				"clear": false,
+				"group": "test"
+			}
+		},
+		{
+			"label": "🔬 Full Test Suite",
+			"dependsOn": [
+				"🔍 Type Check",
+				"✨ Lint",
+				"🧪 Run Tests",
+				"🎭 E2E Tests"
+			],
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true
+			}
+		}
+	]
+}

@@ -1,0 +1,51 @@
+{
+	"recommendations": [
+		// TypeScript & JavaScript
+		"bradlc.vscode-tailwindcss",
+		"esbenp.prettier-vscode",
+		"dbaeumer.vscode-eslint",
+		
+		// Next.js & React
+		"formulahendry.auto-rename-tag",
+		"formulahendry.auto-close-tag",
+		"ms-vscode.vscode-typescript-next",
+		
+		// Database & API
+		"Prisma.prisma",
+		"GraphQL.vscode-graphql",
+		"humao.rest-client",
+		
+		// Git & GitHub
+		"GitHub.vscode-pull-request-github",
+		"GitHub.codespaces",
+		"eamodio.gitlens",
+		
+		// Development Experience
+		"GitHub.copilot",
+		"GitHub.copilot-chat",
+		"ms-vscode.vscode-json",
+		"yzhang.markdown-all-in-one",
+		"formulahendry.auto-close-tag",
+		
+		// Azure & Cloud
+		"ms-azuretools.vscode-azureappservice",
+		"ms-azuretools.vscode-azureresourcegroups",
+		"ms-azuretools.vscode-docker",
+		
+		// Testing & Quality
+		"Orta.vscode-jest",
+		"ms-playwright.playwright",
+		"streetsidesoftware.code-spell-checker",
+		
+		// Utilities
+		"bierner.emojisense",
+		"ms-vscode.vscode-speech",
+		"ms-vscode.live-server",
+		"EditorConfig.EditorConfig"
+	],
+	"unwantedRecommendations": [
+		"ms-vscode.vscode-typescript-tslint-plugin",
+		"hookyqr.beautify",
+		"formulahendry.code-runner"
+	]
+}

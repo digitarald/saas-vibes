@@ -1,0 +1,93 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "🚀 Debug Next.js App",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceFolder}/node_modules/.bin/next",
+			"args": ["dev", "--turbopack"],
+			"cwd": "${workspaceFolder}",
+			"runtimeArgs": ["--inspect"],
+			"env": {
+				"NODE_ENV": "development"
+			},
+			"console": "integratedTerminal",
+			"restart": true,
+			"serverReadyAction": {
+				"pattern": "- Local:.+(https?://.+)",
+				"uriFormat": "%s",
+				"action": "debugWithChrome"
+			}
+		},
+		{
+			"name": "🔍 Debug Current TypeScript File",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceFolder}/node_modules/.bin/tsx",
+			"args": ["${file}"],
+			"cwd": "${workspaceFolder}",
+			"console": "integratedTerminal",
+			"env": {
+				"NODE_ENV": "development"
+			}
+		},
+		{
+			"name": "🌱 Debug Database Seed",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceFolder}/node_modules/.bin/tsx",
+			"args": ["prisma/seed.ts"],
+			"cwd": "${workspaceFolder}",
+			"console": "integratedTerminal",
+			"env": {
+				"NODE_ENV": "development"
+			}
+		},
+		{
+			"name": "🧪 Debug Next.js Build",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceFolder}/node_modules/.bin/next",
+			"args": ["build"],
+			"cwd": "${workspaceFolder}",
+			"console": "integratedTerminal",
+			"env": {
+				"NODE_ENV": "production"
+			}
+		},
+		{
+			"name": "🏭 Debug Production Server",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceFolder}/node_modules/.bin/next",
+			"args": ["start"],
+			"cwd": "${workspaceFolder}",
+			"runtimeArgs": ["--inspect"],
+			"env": {
+				"NODE_ENV": "production"
+			},
+			"console": "integratedTerminal",
+			"restart": true
+		},
+		{
+			"name": "🔧 Attach to Next.js",
+			"type": "node",
+			"request": "attach",
+			"port": 9229,
+			"restart": true,
+			"localRoot": "${workspaceFolder}",
+			"remoteRoot": "${workspaceFolder}"
+		}
+	],
+	"compounds": [
+		{
+			"name": "🚀 Full Stack Debug",
+			"configurations": [
+				"🚀 Debug Next.js App"
+			],
+			"preLaunchTask": "🗄️ Database: Start Services",
+			"stopAll": true
+		}
+	]
+}

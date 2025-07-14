@@ -1,0 +1,18 @@
+{
+	"servers": {
+		"playwright": {
+			"command": "npx",
+			"args": [
+				"@playwright/mcp@latest"
+			]
+		},
+		"magicui": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"@magicuidesign/mcp@latest"
+			]
+		}
+	},
+	"inputs": []
+}
