@@ -7,6 +7,7 @@
 - **Implement minimal code** to pass the test
 - **Refactor with confidence** knowing tests validate behavior
 - **No exceptions** - TDD is required for all features
+- **Use comprehensive test structure**: unit tests in `src/__tests__/`, e2e tests in `tests/e2e/`
 
 ### 2. TypeScript Strict Mode - ENFORCED
 - **No implicit any** - explicit typing required
@@ -61,6 +62,31 @@ Organization → Project → Task (example business logic)
 - `Project/Task` - Example SaaS feature models
 
 ## 🛠️ Development Patterns
+
+### Critical Development Workflow
+- **Start dev environment**: Use VS Code task "🚀 Full Stack Setup" (Ctrl+Shift+P → "Tasks: Run Task")
+- **Database setup**: Docker Compose with PostgreSQL + pgbouncer + Redis on custom ports (5433, 6433, 6379)
+- **Hot reloading**: Turbopack for instant feedback during development
+- **Task automation**: All common operations available as VS Code tasks with emoji prefixes
+
+### Docker Development Environment
+**Use VS Code Tasks (Ctrl+Shift+P → "Tasks: Run Task"):**
+- **🗄️ Database: Start Services** - Start all services (PostgreSQL, pgbouncer, Redis)
+- **🧹 Clean & Restart** - Reset and restart clean environment
+- **🔄 Database: Migrate** - Apply migrations
+- **🔄 Database: Generate Client** - Generate Prisma client
+- **🌱 Database: Seed** - Seed with sample data
+- **🎛️ Database: Studio** - Open Prisma Studio (localhost:5555)
+
+**Manual Commands (if needed):**
+```bash
+pnpm run docker:up     # Start services
+pnpm run docker:down   # Stop services
+pnpm run db:migrate    # Apply migrations
+pnpm run db:generate   # Generate Prisma client
+pnpm run db:seed       # Seed with sample data
+pnpm run db:studio     # Open Prisma Studio
+```
 
 ## 📁 File Organization
 
@@ -144,8 +170,8 @@ tests/
 - **Performance**: Limit Particles quantity to ~100 for optimal performance
 
 ### Build & Deployment Issues
-- **Type Checking**: Run `pnpm type-check` separately from build for cleaner error messages
-- **Linting Errors**: Fix unescaped entities in JSX immediately after adding content
+- **Type Checking**: Use VS Code task "🔍 Type Check" for cleaner error messages
+- **Linting Errors**: Use "🔧 Lint & Fix" task to automatically fix issues
 - **Unused Variables**: Remove unused imports promptly to avoid accumulating lint errors
 - **Cache Issues**: Restart dev server if TypeScript resolution seems incorrect
 
@@ -155,6 +181,7 @@ tests/
 - **Session Callbacks**: Use `({ session, user })` parameters, not `({ token, session })` with database adapter
 - **Protected Routes**: Always validate session existence before accessing user properties
 - **Azure AD Integration**: Ensure proper callback URLs are configured in Azure portal
+- **Multi-Provider Support**: Configured for both Azure AD and Google OAuth (see `src/lib/auth.ts`)
 
 ## 🔐 Security & Access Control
 
@@ -168,6 +195,35 @@ tests/
 2. **Database session management** with Prisma adapter
 3. **Organization assignment** on first login
 4. **Role-based permissions** via OrganizationMember
+
+### Multi-Tenant Query Patterns
+```typescript
+// ✅ ALWAYS scope by organization
+const projects = await prisma.project.findMany({
+  where: { organizationId: session.user.organizationId }
+})
+
+// ✅ Include organization context in session
+async session({ session, user }) {
+  const orgMember = await prisma.organizationMember.findFirst({
+    where: { userId: user.id },
+    include: { organization: true }
+  })
+  if (orgMember) {
+    session.user.organizationId = orgMember.organizationId
+    session.user.role = orgMember.role
+  }
+  return session
+}
+
+// ✅ Validate ownership + organization scope
+const resource = await prisma.model.findFirst({
+  where: { 
+    id: params.id,
+    organizationId: session.user.organizationId 
+  }
+})
+```
 
 *Detailed authentication patterns in `.github/instructions/api.instructions.md`*
 
@@ -196,6 +252,8 @@ APPLICATIONINSIGHTS_CONNECTION_STRING=
 - **Extensions recommended** for optimal DX
 - **Turbopack dev mode** for instant HMR
 - **Integrated test UI** via VS Code tasks (🧪 Test UI, 🎭 E2E Tests UI)
+- **Auto-start task**: Dev server starts automatically when VS Code opens workspace
+- **Full stack setup**: Use "🚀 Full Stack Setup" task to initialize complete development environment
 
 ## 🧪 Testing Strategy
 
@@ -225,6 +283,16 @@ tests/e2e/
 ```
 
 ### Test Scripts & VS Code Integration
+**Use VS Code Tasks (Ctrl+Shift+P → "Tasks: Run Task"):**
+- **🧪 Run Tests** - Run tests in watch mode
+- **🧪 Run Tests (Watch)** - Background watch mode for continuous testing
+- **🧪 Test UI** - Interactive test UI
+- **🧪 Test Coverage** - Coverage report generation
+- **🎭 E2E Tests** - End-to-end tests
+- **🎭 E2E Tests (UI)** - E2E tests with UI
+- **🔬 Full Test Suite** - Run complete test validation (type-check, lint, unit, e2e)
+
+**Manual Commands (if needed):**
 ```bash
 pnpm test           # Run tests in watch mode
 pnpm test:run       # Run tests once (CI mode)
@@ -295,7 +363,7 @@ test('Authentication Flow', async ({ page }) => {
 1. **Write failing test first** - Always start with a failing test that defines expected behavior
 2. **Implement minimal code** - Write only enough code to make the test pass
 3. **Refactor with confidence** - Improve code structure while maintaining test coverage
-4. **Validate thoroughly** - Run type-check, lint, and full test suite before commits
+4. **Validate thoroughly** - Use VS Code tasks: "🔍 Type Check", "🔧 Lint & Fix", and "🔬 Full Test Suite" before commits
 
 ### Testing Best Practices
 - **Accessibility-first**: Test with screen readers and keyboard navigation in mind
@@ -330,7 +398,7 @@ test('Authentication Flow', async ({ page }) => {
 1. **Create feature branch** from main
 2. **Write tests first** (TDD approach)
 3. **Implement feature** with TypeScript strict mode
-4. **Run validation** (type-check, lint, test)
+4. **Run validation** using VS Code tasks: "🔍 Type Check", "🔧 Lint & Fix", "🧪 Run Tests"
 5. **Create PR** with automated checks
 6. **Deploy to staging** via GitHub Actions
 7. **Production deployment** after review
