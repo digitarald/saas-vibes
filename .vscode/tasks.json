@@ -75,7 +75,7 @@
 			"label": "🔧 Lint & Fix",
 			"type": "shell",
 			"command": "pnpm",
-			"args": ["run", "lint", "--", "--fix"],
+			"args": ["run", "lint:fix"],
 			"group": "test",
 			"problemMatcher": ["$eslint-stylish"],
 			"presentation": {
